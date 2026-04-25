@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [],
+  standalone: true,
+  imports: [SidebarComponent,TopbarComponent],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css'
+  styleUrls: ['./main-layout.component.css']
 })
 export class MainLayoutComponent {
 
