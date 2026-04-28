@@ -1,0 +1,23 @@
+<div *ngIf="result">
+
+  <div *ngIf="result.length === 0" class="text-slate-500">
+    Sin resultados
+  </div>
+
+  <div *ngFor="let legajo of result" class="bg-white rounded-2xl border p-4">
+
+    <p><b>Manual ID:</b> {{ legajo.manualId }}</p>
+    <p><b>Casillero:</b> {{ legajo.casilleroId }}</p>
+    <p><b>Inicio Legajo:</b> {{ legajo.fechaInicioLegajo }}</p>
+    <p><b>Descripcion Legajo:</b></p>
+
+
+    <textarea
+      class="w-full mt-3 border p-2 rounded"
+      rows="3"
+      [(ngModel)]="legajo.descripcionLegajo"
+    ></textarea>
+
+  </div>
+
+</div>

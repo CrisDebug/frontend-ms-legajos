@@ -1,0 +1,27 @@
+  <!-- 📌 SOLO SI HAY CASILLERO -->
+  <div *ngIf="(casilleroId$ | async) as casilleroId; else noContext">
+
+    <!-- 🔎 BUSCADOR (solo con contexto) -->
+    <app-legajos-search
+      [casilleroId]="casilleroId"
+      [resetTrigger]="casilleroId"
+      (onSearch)="buscar($event)">
+    </app-legajos-search>
+
+    <!-- 📦 RESULTADO (STATE MACHINE) -->
+    <app-legajo-state
+  [state]="state"
+  (create)="startCreate($event)"
+  (save)="saveLegajo($event)"
+  (cancel)="cancelCreate()">
+</app-legajo-state>
+
+    
+  </div>
+  
+  <!-- ❌ SIN CASILLERO -->
+  <ng-template #noContext>
+    <p class="text-slate-500">
+      Selecciona un casillero para comenzar
+    </p>
+  </ng-template>

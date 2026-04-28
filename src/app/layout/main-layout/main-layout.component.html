@@ -1,29 +1,29 @@
-<div class="h-screen flex flex-col bg-slate-100">
+<!-- CONTENEDOR PRINCIPAL: ocupa toda la pantalla -->
+<div class="h-screen flex flex-col">
 
-  <!-- TOPBAR -->
+  <!-- TOPBAR: barra superior fija (branding + usuario) -->
   <app-topbar></app-topbar>
 
-  <!-- BODY -->
+  <!-- CUERPO PRINCIPAL: sidebar + contenido -->
   <div class="flex flex-1 overflow-hidden">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR: navegación por casilleros (origen del contexto) -->
     <app-sidebar></app-sidebar>
 
-    <!-- Main Panel -->
+    <!-- ZONA PRINCIPAL -->
     <main class="flex-1 overflow-y-auto p-6">
-      <section class="mb-6">
-        <h2 class="text-2xl font-bold text-slate-900">Legajos</h2>
-        <p class="text-slate-600 mt-1">
-          Selecciona un casillero para comenzar.
-        </p>
-      </section>
 
-      <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-        <p class="text-slate-700">
-          Aquí irá el flujo cascada:
-          <span class="font-semibold">Crear Legajo → Buscar → Listar</span>
-        </p>
-      </section>
+      <!-- CONTEXTO ACTIVO (solo lectura del estado global) -->
+      <div class="mb-4 text-sm text-slate-600">
+        Casillero activo:
+        <span class="font-semibold text-slate-900">
+          {{ (casilleroId$ | async) ? (casilleroId$ | async) : 'Ninguno seleccionado' }}
+        </span>
+      </div>
+
+      <!-- AQUI SE RENDERIZAN LAS PAGES -->
+      <router-outlet></router-outlet>
+
     </main>
 
   </div>

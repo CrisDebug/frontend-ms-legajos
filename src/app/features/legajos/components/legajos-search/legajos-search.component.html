@@ -1,0 +1,21 @@
+<div class="flex items-center gap-2 mb-6">
+  <input
+  #manualInput
+  type="number"
+  [(ngModel)]="manualId"
+  (keydown)="onEnter($event)"
+  placeholder="Buscar legajo por ID..."
+  class="flex-1 border border-slate-200 rounded-lg px-3 py-2
+         focus:outline-none focus:ring-1 focus:ring-slate-400"
+  autofocus
+/>
+
+  <button
+    (click)="buscar()"
+    class="bg-slate-900 text-white px-4 py-2 rounded-lg
+           hover:bg-slate-800 transition"
+  >
+    Buscar
+  </button>
+
+</div>

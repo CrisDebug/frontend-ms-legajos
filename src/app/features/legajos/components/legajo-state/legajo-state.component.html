@@ -1,0 +1,111 @@
+<!--
+  📌 LEGAJO STATE COMPONENT
+  UI basada en máquina de estados (state machine)
+  SOLO un estado visible a la vez
+-->
+
+<!-- ===================== -->
+<!-- 💤 IDLE STATE -->
+<!-- ===================== -->
+<!-- <  
+  <div class="p-4 text-gray-500 border rounded-lg">
+    <p>Busca un legajo dentro del casillero activo</p>
+  </div>
+</ng-container> -->
+
+
+<!-- ===================== -->
+<!-- ⏳ LOADING STATE -->
+<!-- ===================== -->
+<ng-container *ngIf="state.mode === 'loading'">
+  <div class="p-4 border rounded-lg">
+    <p class="text-gray-500">Buscando legajo...</p>
+  </div>
+</ng-container>
+
+
+<!-- ===================== -->
+<!-- 📄 FOUND STATE -->
+<!-- ===================== -->
+<!-- ===================== -->
+<!-- 📄 FOUND STATE -->
+<!-- ===================== -->
+<ng-container *ngIf="state.mode === 'found'">
+  <div class="bg-white rounded-2xl border p-4 space-y-2">
+
+    <p><b>Manual ID:</b> {{ state.legajo.manualId }}</p>
+    <p><b>Casillero:</b> {{ state.legajo.casilleroId }}</p>
+    <p><b>Inicio Legajo:</b> {{ state.legajo.fechaInicioLegajo }}</p>
+
+    <p class="mt-2"><b>Descripción:</b></p>
+
+    <!-- 🔒 SOLO LECTURA -->
+    <textarea
+      class="w-full mt-2 border p-2 rounded bg-slate-50"
+      rows="3"
+      [value]="state.legajo.descripcionLegajo"
+      readonly>
+    </textarea>
+
+  </div>
+</ng-container>
+
+
+<!-- ===================== -->
+<!-- ❌ NOT FOUND STATE -->
+<!-- ===================== -->
+<ng-container *ngIf="state.mode === 'not-found'">
+  <div class="p-4 border rounded-lg space-y-3">
+
+    <!-- Mensaje de error controlado -->
+    <div class="text-red-600 font-medium">
+      No existe este legajo
+    </div>
+
+    <p class="text-sm text-gray-500">
+      Puedes crear un legajo en este casillero
+    </p>
+
+    <!-- Acción de creación -->
+    <button
+      class="bg-blue-500 text-white px-3 py-2 rounded"
+      (click)="create.emit(state.manualId)">
+      + Crear legajo
+    </button>
+  </div>
+</ng-container>
+
+
+<!-- ===================== -->
+<!-- ✍️ CREATING STATE -->
+<!-- ===================== -->
+<ng-container *ngIf="state.mode === 'creating'">
+  <div class="p-4 border rounded-lg space-y-3">
+
+    <!-- Título -->
+    <div class="font-semibold">
+      Crear nuevo legajo
+    </div>
+
+    <!-- Input de descripción -->
+    <input
+      class="w-full border rounded p-2"
+      #desc
+      placeholder="Descripción del legajo"
+    />
+
+    <!-- Guardar nuevo legajo -->
+    <button
+      class="bg-blue-500 text-white px-3 py-2 rounded"
+      (click)="save.emit(desc.value)">
+      Guardar
+    </button>
+
+    <!-- cancelar creacion -->
+    <button
+      class="bg-slate-200 text-slate-800 px-3 py-2 rounded"
+      (click)="cancel.emit()">
+      Cancelar
+    </button>
+  </div>
+</ng-container>

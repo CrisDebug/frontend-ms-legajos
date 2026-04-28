@@ -1,21 +1,29 @@
 <aside class="w-64 h-full bg-slate-50 border-r border-slate-200 p-4 flex flex-col">
-  <h2 class="text-lg font-semibold text-slate-800 mb-4">Casilleros</h2>
 
-  <nav class="space-y-2 flex-1 overflow-y-auto">
-    <button class="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100">
-      Casillero A
+  <!-- Título -->
+  <h2 class="text-lg font-semibold text-slate-800 mb-4">
+    Casilleros
+  </h2>
+
+  <!-- Lista dinámica -->
+  <nav class="space-y-2 flex-1">
+
+    <button
+      *ngFor="let casillero of casilleros"
+      (click)="selectCasillero(casillero.id)"
+      class="w-full text-left px-3 py-2 hover:border-l-4"
+      [ngClass]="{
+      ' font-semibold border-l-8 border-yellow-200': selectedCasilleroId === casillero.id
+      }"
+    >
+      {{ casillero.nombreCasillero }}
     </button>
 
-    <button class="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100">
-      Casillero B
-    </button>
-
-    <button class="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100">
-      Casillero C
-    </button>
   </nav>
 
+  <!-- Footer -->
   <div class="pt-4 border-t border-slate-200 text-xs text-slate-500">
     Microdocs · v0.1
   </div>
+
 </aside>
