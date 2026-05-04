@@ -1,59 +1,117 @@
-# FrontendMsLegajos
+# 📦 Sistema de Gestión de Legajos — Microservicios + Angular + Oracle
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.18.
+## 📌 Descripción
+Sistema distribuido de gestión de legajos y casilleros basado en arquitectura de microservicios con Spring Boot, frontend en Angular 19 y base de datos Oracle XE, orquestado con Docker Compose. Incluye autenticación JWT y control de acceso por roles.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🧱 Arquitectura
 
+### 🔹 Backend (Microservicios)
+- **Usuarios Service (Auth)** → `:8084`
+  - Registro y login
+  - Generación de JWT
+- **Legajos Service** → `:8083`
+  - Gestión de legajos
+- **Casilleros Service** → `:8082`
+  - Gestión de casilleros
+
+### 🐳 Infraestructura
+- Oracle XE (`1521`)
+- Docker Compose
+- Microservicios independientes
+
+---
+
+## 🎨 Frontend (Angular 19)
+
+- Standalone Components
+- Tailwind CSS
+- Reactive Forms
+- HTTP Interceptor JWT
+- Route Guards
+- Arquitectura modular
+
+src/app/
+├── core/auth (services, guards, interceptors)
+├── features/
+│ ├── auth
+│ ├── legajos
+│ ├── casilleros
+├── layout/main-layout
+
+
+
+---
+
+## 🔐 Autenticación JWT
+
+### Flujo:
+1. Login usuario
+2. Backend genera JWT
+3. Token guardado en `localStorage`
+4. Interceptor agrega:
+
+Authorization: Bearer <token>
+
+5. Guards protegen rutas
+
+---
+
+## 👤 Funcionalidades
+
+### 🔑 Auth
+- Login con validaciones
+- Registro de usuario
+- Logout
+- Auto-login
+- Decodificación JWT (email + rol)
+
+### 🧭 UI
+- Topbar con usuario autenticado
+- Login responsive (mobile-first)
+- Validaciones visuales
+- Loading en login
+
+### 🔒 Seguridad
+- Route Guards
+- HTTP Interceptor
+- JWT stateless
+
+---
+
+## 📊 Base de Datos (Oracle)
+
+- USUARIO (APP_ADMIN)
+- LEGAJOS (USUARIO_LEG)
+- CASILLEROS (USUARIO_CAS)
+
+---
+
+## 🚀 Ejecución
+
+### Backend
 ```bash
+docker-compose up --build
+
+Frontend
+
+npm install
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+http://localhost:4200
 
-## Code scaffolding
+🔗 Endpoints
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Auth
 
-```bash
-ng generate component component-name
-```
+POST /api/auth/login
+POST /api/auth/register
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Legajos
 
-```bash
-ng generate --help
-```
+GET /legajos
 
-## Building
+Casilleros
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+GET /casilleros
