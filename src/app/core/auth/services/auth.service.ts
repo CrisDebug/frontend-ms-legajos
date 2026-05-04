@@ -61,23 +61,24 @@ export class AuthService {
   // TOKEN
   // ==========================
   getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+  return localStorage.getItem('token');
+}
+
+
 
   // ==========================
   // LOGOUT
   // ==========================
-  logout() {
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('token');
-    this.currentUserSubject.next(null);
-  }
+  logout(): void {
+  localStorage.removeItem('token');
+  this.currentUserSubject.next(null);
+}
 
   // ==========================
   // HELPERS
   // ==========================
   isLoggedIn(): boolean {
-    return !!this.getToken();
+  return !!this.getToken();
   }
 
   getRole(): string | null {
@@ -87,5 +88,18 @@ export class AuthService {
 
   getUser(): LoginResponse | null {
     return this.currentUserSubject.value;
+  }
+  // 🔓 DECODIFICAR JWT
+  getUserFromToken(): any {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+
+    return {
+      id: payload.id,
+      email: payload.sub,
+      role: payload.role
+    };
   }
 }
