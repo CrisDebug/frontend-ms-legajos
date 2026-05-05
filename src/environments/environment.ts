@@ -3,5 +3,5 @@ export const environment = {
   production: false,
 
   // URL base de todos los microservicios (puede ser API Gateway en el futuro)
-  apiUrl: 'http://localhost:8081'
+  apiUrl: 'http://localhost:8082'
 };

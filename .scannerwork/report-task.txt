@@ -1,0 +1,6 @@
+projectKey=frontend-ms-legajos
+serverUrl=http://localhost:9000
+serverVersion=26.4.0.121862
+dashboardUrl=http://localhost:9000/dashboard?id=frontend-ms-legajos
+ceTaskId=aa64b4a8-4af8-4d85-b8c2-a3a48fdcca74
+ceTaskUrl=http://localhost:9000/api/ce/task?id=aa64b4a8-4af8-4d85-b8c2-a3a48fdcca74
