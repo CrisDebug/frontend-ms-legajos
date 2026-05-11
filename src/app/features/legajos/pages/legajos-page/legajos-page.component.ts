@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 
@@ -7,9 +7,6 @@ import { LegajosService } from '../../services/legajos.service';
 
 import { LegajosSearchComponent } from '../../components/legajos-search/legajos-search.component';
 import { LegajoStateComponent, LegajoViewState } from '../../components/legajo-state/legajo-state.component';
-
-import { ViewChild } from '@angular/core';
-
 
 @Component({
   selector: 'app-legajos-page',
@@ -21,19 +18,20 @@ import { ViewChild } from '@angular/core';
   ],
   templateUrl: './legajos-page.component.html'
 })
-export class LegajosPageComponent {
+export class LegajosPageComponent implements OnInit {
 
-  //view child
+  // permite acceder al componente buscador (para reset y focus)
   @ViewChild(LegajosSearchComponent)
   searchComponent!: LegajosSearchComponent;
-  
-  // 📌 Casillero activo (contexto global del sistema)
+
+  // casillero activo (contexto global)
   casilleroId$: Observable<number | null>;
 
-  // 📌 ÚNICA fuente de verdad de la UI (estado del flujo)
+  // estado general del flujo UI
   state: LegajoViewState = { mode: 'idle' };
 
-  
+  // mensaje visual para feedback al usuario
+  mensaje: string | null = null;
 
   constructor(
     private context: CasilleroContextService,
@@ -42,31 +40,53 @@ export class LegajosPageComponent {
     this.casilleroId$ = this.context.casilleroId$;
   }
 
+  // cuando cambia el casillero, reseteamos el flujo
+  ngOnInit() {
+    this.casilleroId$.subscribe(() => {
+      this.state = { mode: 'idle' };
+      this.mensaje = null;
+    });
+  }
+
   /**
-   * 🔎 BÚSQUEDA DE LEGAJO
-   * - Siempre dentro del casillero activo
-   * - No retorna listas, solo 1 resultado o null
+   * buscar legajo dentro del casillero activo
    */
   buscar(manualId: number) {
+
     const casilleroId = this.context.getCasillero();
 
     if (!casilleroId) return;
 
-    // 📌 estado loading para UX
+    // limpiar mensaje anterior al iniciar búsqueda
+    this.mensaje = null;
+
+    // estado loading para UX
     this.state = { mode: 'loading' };
 
     this.legajosService.searchByManualId(casilleroId, manualId)
-      .subscribe(res => {
+      .subscribe({
+        next: (res) => {
 
-        // ✔ si existe legajo → estado FOUND
-        if (res) {
-          this.state = {
-            mode: 'found',
-            legajo: res
-          };
-        } 
-        // ❌ si no existe → estado NOT FOUND
-        else {
+          // si existe → found
+          if (res) {
+            this.state = {
+              mode: 'found',
+              legajo: res
+            };
+          }
+          // si no existe → not-found
+          else {
+            this.state = {
+              mode: 'not-found',
+              manualId
+            };
+          }
+
+        },
+        error: (err) => {
+          console.error('Error buscando legajo', err);
+
+          // si falla la búsqueda, igual dejamos el flujo en not-found
           this.state = {
             mode: 'not-found',
             manualId
@@ -76,58 +96,78 @@ export class LegajosPageComponent {
   }
 
   /**
-   * ➕ INICIAR CREACIÓN
-   * - Se dispara desde UI cuando el usuario decide crear
+   * iniciar creación desde el botón "crear legajo"
    */
   startCreate(manualId: number) {
 
-  // ✅ reset input del buscador
-  this.searchComponent?.reset();
+    // limpiar mensaje anterior
+    this.mensaje = null;
 
-  this.state = {
-    mode: 'creating',
-    manualId
-  };
-}
+    // reset del input buscador
+    this.searchComponent?.reset();
+
+    // pasar a estado creando (manualId sugerido pero editable)
+    this.state = {
+      mode: 'creating',
+      manualId
+    };
+  }
 
   /**
-   * 💾 GUARDAR LEGAJO
-   * - Se usa tanto en creación como en edición futura
+   * guardar legajo en backend
+   * ahora recibe manualId y descripcion desde el formulario
    */
-  saveLegajo(descripcion: string) {
+  saveLegajo(data: { manualId: number; descripcion: string }) {
+
     const casilleroId = this.context.getCasillero();
 
-    if (!casilleroId || this.state.mode !== 'creating') return;
+    if (!casilleroId) return;
 
+    // limpiar mensaje anterior
+    this.mensaje = null;
+
+    // request body según backend
     const newLegajo = {
-      manualId: this.state.manualId,
-      descripcionLegajo: descripcion,
+      manualId: data.manualId,
+      descripcionLegajo: data.descripcion,
       casilleroId
     };
 
     this.legajosService.createLegajo(newLegajo)
-      .subscribe(created => {
-        // ✔ después de crear → estado FOUND
-        this.state = {
-          mode: 'found',
-          legajo: created
-        };
+      .subscribe({
+        next: (created) => {
+
+          // mensaje de confirmación
+          this.mensaje = 'Legajo creado correctamente';
+
+          // cambiar a estado found con el legajo recién creado
+          this.state = {
+            mode: 'found',
+            legajo: created
+          };
+        },
+        error: (err) => {
+          console.error('Error creando legajo', err);
+
+          // mensaje de error visual
+          this.mensaje = 'Error al crear el legajo';
+        }
       });
   }
 
   /**
-   * 🔁 RESET cuando cambia el casillero
-   * - limpia estado de búsqueda
+   * cancelar creación
    */
-  ngOnInit() {
-    this.casilleroId$.subscribe(() => {
-      this.state = { mode: 'idle' };
-    });
-  }
   cancelCreate() {
-  this.state = { mode: 'idle' };
 
-  this.searchComponent?.reset();
-  this.searchComponent?.focusInput();
-}
+    // limpiar mensaje
+    this.mensaje = null;
+
+    // volver al estado inicial
+    this.state = { mode: 'idle' };
+
+    // reset buscador
+    this.searchComponent?.reset();
+    this.searchComponent?.focusInput();
+  }
 }

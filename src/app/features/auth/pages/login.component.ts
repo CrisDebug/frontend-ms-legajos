@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/auth/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
@@ -33,26 +33,58 @@ export class LoginComponent {
     }
   }
 
-  login() {
-    if (this.form.invalid) return;
+//   login() {
+//     if (this.form.invalid) return;
 
-    this.loading = true;
-    this.error = '';
+//     this.loading = true;
+//     this.error = '';
 
-    const { email, password } = this.form.value;
+//     const { email, password } = this.form.value;
 
-    this.authService.login(email!, password!).subscribe({
-      next: (res: any) => {
+//     this.authService.login(email!, password!).subscribe({
+//       next: (res: any) => {
 
-        // 💾 guardar token
-        localStorage.setItem('token', res.token);
+//         // 💾 guardar token
+//         localStorage.setItem('token', res.token);
 
-        this.loading = false;
-        this.router.navigate(['/legajos']);
-      },
-      error: () => {
-        this.loading = false;
-        this.error = 'Credenciales inválidas';
+//         this.loading = false;
+//         this.router.navigate(['/legajos']);
+//       },
+//       error: () => {
+//         this.loading = false;
+//         this.error = 'Credenciales inválidas';
+//       }
+//     });
+//   }
+// }
+
+login() {
+  console.log("LOGIN CLICKED"); // 👈 DEBUG
+
+  if (this.form.invalid) {
+    console.log("FORM INVALID", this.form.value);
+    return;
+  }
+
+  this.loading = true;
+  this.error = '';
+
+  const { email, password } = this.form.value;
+
+  this.authService.login(email!, password!).subscribe({
+    next: (res: any) => {
+      console.log("LOGIN OK", res);
+
+      localStorage.setItem('token', res.token);
+
+      this.loading = false;
+      this.router.navigate(['/legajos']);
+    },
+    error: (err) => {
+      console.log("LOGIN ERROR", err);
+
+      this.loading = false;
+      this.error = 'Credenciales inválidas';
       }
     });
   }

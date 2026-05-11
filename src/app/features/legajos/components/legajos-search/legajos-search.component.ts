@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
-  selector: 'app-legajos-search',
+  selector: 'app-legajos-search', // 👈 ARREGLADO
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './legajos-search.component.html'

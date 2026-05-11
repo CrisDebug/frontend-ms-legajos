@@ -15,9 +15,27 @@
     </span>
   </div>
 
-  <!-- Usuario (placeholder futuro login) -->
-  <div class="text-sm text-slate-600 hidden md:inline">
-    CrisDebug · Admin
+  <!-- USER -->
+  <div class="flex items-center gap-4 text-sm text-slate-600 hidden md:flex">
+
+    <span *ngIf="user$ | async as user">
+      {{ user.nombreUsuario }} · {{ user.rol }}
+    </span>
+
+    <!-- SOLO NAVIGACIÓN (NO TOGGLE) -->
+    <button
+  *ngIf="(role$ | async) === 'ADMIN'"
+  (click)="toggleAdmin.emit()"
+  class="text-indigo-600 hover:text-indigo-800 font-medium"
+>
+  Panel Admin
+</button>
+
+    <button (click)="logout()"
+      class="text-red-600 hover:text-red-800 font-medium">
+      Logout
+    </button>
+
   </div>
 
 </header>

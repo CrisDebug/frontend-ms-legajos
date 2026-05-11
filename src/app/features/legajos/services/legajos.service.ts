@@ -1,49 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { Legajo } from '../models/legajo.model';
+import { environment } from '../../../../environments/environment';
 
-/**
- * Servicio mock de Legajos.
- * Luego se reemplaza por HttpClient real.
- */
 @Injectable({
   providedIn: 'root'
 })
 export class LegajosService {
 
-  // 🧪 Mock: simula registros provenientes de API
-  private legajos: Legajo[] = [
-    { id: 1, manualId: 1001, descripcionLegajo: 'legajo microdocs 3', casilleroId: 1 ,fechaInicioLegajo:'26-04-2026'},
-    { id: 2, manualId: 1002, descripcionLegajo: 'Legajo microdocs 3', casilleroId: 1 ,fechaInicioLegajo:'01-01-2026'},
-    { id: 3, manualId: 2001, descripcionLegajo: 'Legajo microdocs 3', casilleroId: 2 ,fechaInicioLegajo:'01-25-2026'},
-    { id: 4, manualId: 3001, descripcionLegajo: 'Legajo microdocs 4', casilleroId: 3 ,fechaInicioLegajo:'02-26-2026'}
-  ];
+  // 📌 URL base del microservicio de legajos
+  // Ej: http://localhost:8083/api/legajos
+  private readonly baseUrl = `${environment.API_LEGAJOS}/api/legajos`;
 
-  // // 📌 Obtener legajos por casillero
-  // getByCasillero(casilleroId: number): Observable<Legajo[]> {
-  //   return of(this.legajos.filter(l => l.casilleroId === casilleroId));
-  // }
-  
-  //busqueda de id maual de legajo
-  searchByManualId(casilleroId: number, manualId: number): Observable<Legajo | null> {
-  const result = this.legajos.find(
-    l => l.casilleroId === casilleroId && l.manualId === manualId
-  );
+  constructor(private http: HttpClient) {}
 
-  return of(result ?? null);
-}
+  /**
+   * ✅ GET: listar todos los legajos (API real)
+   */
+  getAll(): Observable<Legajo[]> {
+    return this.http.get<Legajo[]>(this.baseUrl);
+  }
 
-  // 📌 Crear legajo en un casillero
+  /**
+   * ✅ GET: obtener un legajo por ID (API real)
+   */
+  getById(id: number): Observable<Legajo> {
+    return this.http.get<Legajo>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * ✅ POST: crear un legajo (API real)
+   */
   createLegajo(newLegajo: Omit<Legajo, 'id'>): Observable<Legajo> {
-    const id = this.legajos.length + 1;
+    return this.http.post<Legajo>(this.baseUrl, newLegajo);
+  }
 
-    const legajo: Legajo = {
-      id,
-      ...newLegajo
-    };
+  /**
+   * ✅ PUT: actualizar un legajo por ID (API real)
+   */
+  updateLegajo(id: number, legajo: Omit<Legajo, 'id'>): Observable<Legajo> {
+    return this.http.put<Legajo>(`${this.baseUrl}/${id}`, legajo);
+  }
 
-    this.legajos.push(legajo);
+  /**
+   * ✅ DELETE: eliminar un legajo por ID (API real)
+   */
+  deleteLegajo(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
 
-    return of(legajo);
+  /**
+   * 🔎 Buscar por manualId dentro de un casillero
+   * ⚠️ El backend NO tiene endpoint directo para esto.
+   * Entonces traemos todos los legajos y filtramos en frontend.
+   */
+  searchByManualId(casilleroId: number, manualId: number): Observable<Legajo | null> {
+    return this.getAll().pipe(
+      map(lista =>
+        lista.find(l => l.casilleroId === casilleroId && l.manualId === manualId) ?? null
+      )
+    );
   }
 }

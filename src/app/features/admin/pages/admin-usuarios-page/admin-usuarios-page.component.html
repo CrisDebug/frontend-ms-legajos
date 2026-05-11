@@ -1,0 +1,97 @@
+<div class="p-6">
+
+  <h1 class="text-2xl font-bold mb-4">
+    Gestión de Usuarios
+  </h1>
+
+  <!-- estado carga -->
+  <div *ngIf="loading" class="text-sm text-slate-500 mb-4">
+    Cargando usuarios...
+  </div>
+
+  <!-- grid de usuarios -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+    <div *ngFor="let u of usuarios"
+         class="bg-white shadow rounded-lg p-4 border border-gray-100">
+
+      <!-- MODO NORMAL -->
+      <ng-container *ngIf="usuarioEditandoId !== u.idUsuario; else editMode">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-2">
+
+          <h2 class="font-bold text-lg">
+            {{ u.nombreUsuario }}
+          </h2>
+
+          <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+            {{ u.rol }}
+          </span>
+
+        </div>
+
+        <!-- INFO -->
+        <p class="text-sm text-gray-600">
+          {{ u.email }}
+        </p>
+
+        <p class="text-xs text-gray-400 mt-1">
+          ID: {{ u.idUsuario }}
+        </p>
+
+        <!-- BOTONES -->
+        <div class="flex gap-2 mt-4">
+
+          <button
+            (click)="iniciarEdicion(u)"
+            class="flex-1 bg-blue-500 text-white text-sm py-1 rounded">
+            Editar
+          </button>
+
+          <button
+            (click)="eliminarUsuario(u.idUsuario)"
+            class="flex-1 bg-red-500 text-white text-sm py-1 rounded">
+            Eliminar
+          </button>
+
+        </div>
+
+      </ng-container>
+
+      <!-- MODO EDICIÓN -->
+      <ng-template #editMode>
+
+        <div class="space-y-2">
+
+          <input
+            [(ngModel)]="usuarioEditando.nombreUsuario"
+            class="w-full border rounded px-2 py-1"
+            placeholder="Nombre usuario"
+          />
+
+          <div class="flex gap-2">
+
+            <button
+              (click)="guardarEdicion(u.idUsuario)"
+              class="flex-1 bg-blue-500 text-white text-sm py-1 rounded">
+              Guardar
+            </button>
+
+            <button
+              (click)="cancelarEdicion()"
+              class="flex-1 bg-gray-400 text-white text-sm py-1 rounded">
+              Cancelar
+            </button>
+
+          </div>
+
+        </div>
+
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>

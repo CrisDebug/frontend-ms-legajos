@@ -1,18 +1,4 @@
-<!--
-  📌 LEGAJO STATE COMPONENT
-  UI basada en máquina de estados (state machine)
-  SOLO un estado visible a la vez
--->
-
-<!-- ===================== -->
-<!-- 💤 IDLE STATE -->
-<!-- ===================== -->
-<!-- <  
-  <div class="p-4 text-gray-500 border rounded-lg">
-    <p>Busca un legajo dentro del casillero activo</p>
-  </div>
-</ng-container> -->
-
+<!-- 📌 LEGAJO STATE COMPONENT -->
 
 <!-- ===================== -->
 <!-- ⏳ LOADING STATE -->
@@ -23,10 +9,6 @@
   </div>
 </ng-container>
 
-
-<!-- ===================== -->
-<!-- 📄 FOUND STATE -->
-<!-- ===================== -->
 <!-- ===================== -->
 <!-- 📄 FOUND STATE -->
 <!-- ===================== -->
@@ -39,7 +21,6 @@
 
     <p class="mt-2"><b>Descripción:</b></p>
 
-    <!-- 🔒 SOLO LECTURA -->
     <textarea
       class="w-full mt-2 border p-2 rounded bg-slate-50"
       rows="3"
@@ -50,14 +31,12 @@
   </div>
 </ng-container>
 
-
 <!-- ===================== -->
 <!-- ❌ NOT FOUND STATE -->
 <!-- ===================== -->
 <ng-container *ngIf="state.mode === 'not-found'">
   <div class="p-4 border rounded-lg space-y-3">
 
-    <!-- Mensaje de error controlado -->
     <div class="text-red-600 font-medium">
       No existe este legajo
     </div>
@@ -66,15 +45,14 @@
       Puedes crear un legajo en este casillero
     </p>
 
-    <!-- Acción de creación -->
     <button
       class="bg-blue-500 text-white px-3 py-2 rounded"
-      (click)="create.emit(state.manualId)">
-      + Crear legajo
+      (click)="onCreate()">
+      Crear legajo
     </button>
+
   </div>
 </ng-container>
-
 
 <!-- ===================== -->
 <!-- ✍️ CREATING STATE -->
@@ -82,30 +60,42 @@
 <ng-container *ngIf="state.mode === 'creating'">
   <div class="p-4 border rounded-lg space-y-3">
 
-    <!-- Título -->
     <div class="font-semibold">
       Crear nuevo legajo
     </div>
 
-    <!-- Input de descripción -->
+    <!-- Manual ID -->
     <input
       class="w-full border rounded p-2"
-      #desc
-      placeholder="Descripción del legajo"
+      type="number"
+      [(ngModel)]="manualId"
+      placeholder="Manual ID"
     />
 
-    <!-- Guardar nuevo legajo -->
-    <button
-      class="bg-blue-500 text-white px-3 py-2 rounded"
-      (click)="save.emit(desc.value)">
-      Guardar
-    </button>
+    <!-- Descripción -->
+    <textarea
+      class="w-full border rounded p-2"
+      rows="3"
+      [(ngModel)]="descripcion"
+      placeholder="Descripción del legajo">
+    </textarea>
 
-    <!-- cancelar creacion -->
-    <button
-      class="bg-slate-200 text-slate-800 px-3 py-2 rounded"
-      (click)="cancel.emit()">
-      Cancelar
-    </button>
+    <!-- Acciones -->
+    <div class="flex gap-2">
+
+      <button
+        class="bg-blue-500 text-white px-3 py-2 rounded"
+        (click)="onSave()">
+        Guardar
+      </button>
+
+      <button
+        class="bg-slate-200 text-slate-800 px-3 py-2 rounded"
+        (click)="onCancel()">
+        Cancelar
+      </button>
+
+    </div>
+
   </div>
 </ng-container>

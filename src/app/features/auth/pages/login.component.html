@@ -48,19 +48,26 @@
         type="submit"
         [disabled]="form.invalid || loading"
         class="w-full bg-blue-600 text-white p-3 rounded-lg disabled:opacity-50 flex justify-center items-center gap-2"
-        >
+      >
         <span *ngIf="!loading">Entrar</span>
-
-        <span *ngIf="loading">
-            Cargando...
-        </span>
-        </button>
+        <span *ngIf="loading">Cargando...</span>
+      </button>
 
     </form>
 
     <!-- RECOVERY SIMULADO -->
     <p class="text-center text-sm text-gray-500 mt-4">
-      ¿Olvidaste tu contraseña?
+  <a routerLink="/recover-password" class="hover:underline text-gray-600">
+    ¿Olvidaste tu contraseña?
+  </a>
+</p>
+
+    <!-- LINK A REGISTER -->
+    <p class="text-center text-sm text-gray-600 mt-2">
+      ¿No tienes cuenta?
+      <a routerLink="/register" class="text-blue-600 hover:underline font-medium">
+        Regístrate aquí
+      </a>
     </p>
 
   </div>

@@ -11,7 +11,8 @@ import { environment } from '../../../../environments/environment';
 export class CasillerosService {
 
   // Base dinámica desde environment (evita hardcodear URLs)
-  private readonly baseUrl = `${environment.apiUrl}/api/casilleros`;
+  // private readonly baseUrl = `${environment.apiUrl}/api/casilleros`;
+  private readonly baseUrl = `${environment.API_CASILLEROS}/api/casilleros`;
 
   constructor(private http: HttpClient) {}
 

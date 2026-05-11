@@ -4,12 +4,8 @@ import { CommonModule } from '@angular/common';
 import { CasilleroContextService } from '../../../../core/services/casillero-context.service';
 import { CasillerosService } from '../../../../features/casilleros/services/CasilleroService';
 import { Casillero } from '../../../../features/casilleros/models/Casillero';
+import { Observable } from 'rxjs';
 
-/**
- * Sidebar principal de casilleros
- * - Consume backend real (Spring Boot)
- * - Maneja selección global con BehaviorSubject
- */
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -19,32 +15,22 @@ import { Casillero } from '../../../../features/casilleros/models/Casillero';
 })
 export class SidebarComponent implements OnInit {
 
-  // 📦 lista de casilleros desde backend
   casilleros: Casillero[] = [];
 
-  // 🎯 casillero seleccionado actualmente
-  selectedCasilleroId: number | null = null;
+  // 🎯 ahora sí fuente única de verdad
+  selectedCasilleroId$: Observable<number | null>;
 
   constructor(
     private context: CasilleroContextService,
     private casillerosService: CasillerosService
-  ) {}
-
-  /**
-   * 🚀 Inicialización del componente
-   */
-  ngOnInit(): void {
-    this.loadCasilleros();
-
-    // 🔄 sincroniza selección global con UI
-    this.context.casilleroId$.subscribe(id => {
-      this.selectedCasilleroId = id;
-    });
+  ) {
+    this.selectedCasilleroId$ = this.context.casilleroId$;
   }
 
-  /**
-   * 📡 Obtener casilleros desde backend
-   */
+  ngOnInit(): void {
+    this.loadCasilleros();
+  }
+
   loadCasilleros(): void {
     this.casillerosService.getCasilleros()
       .subscribe({
@@ -57,19 +43,11 @@ export class SidebarComponent implements OnInit {
       });
   }
 
-  /**
-   * 🎯 Seleccionar casillero activo
-   */
   selectCasillero(id: number): void {
-    this.selectedCasilleroId = id;
     this.context.setCasillero(id);
   }
 
-  /**
-   * 🔄 Limpiar selección
-   */
   clearSelection(): void {
-    this.selectedCasilleroId = null;
     this.context.resetCasillero();
   }
 }

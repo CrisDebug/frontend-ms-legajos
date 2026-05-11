@@ -1,30 +1,78 @@
 import { Routes } from '@angular/router';
+
+// 🧱 Layout principal
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+
+// 🔐 Guards
 import { AuthGuard } from './core/auth/guards/auth.guard';
+import { RoleGuard } from './core/auth/guards/role.guard';
+
+// 🔑 Auth pages
 import { LoginComponent } from './features/auth/pages/login.component';
+import { RegisterComponent } from './features/auth/pages/register.component';
+import { RecoverPasswordComponent } from './features/auth/pages/recover-password/recover-password.component';
+
+// 📄 Sistema
 import { LegajosPageComponent } from './features/legajos/pages/legajos-page/legajos-page.component';
+
+// 👑 Admin
+import { AdminUsuariosPageComponent } from './features/admin/pages/admin-usuarios-page/admin-usuarios-page.component';
 
 export const routes: Routes = [
 
-  // 🔐 LOGIN FUERA DEL LAYOUT
+  // =========================
+  // 🔓 PÚBLICAS
+  // =========================
   {
     path: 'login',
     component: LoginComponent
   },
+  {
+    path: 'register',
+    component: RegisterComponent
+  },
+  {
+    path: 'recover-password', // ✅ NUEVA RUTA
+    component: RecoverPasswordComponent
+  },
 
-  // 🧱 APP PROTEGIDA (LAYOUT)
+  // =========================
+  // 🧱 PROTEGIDO
+  // =========================
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
 
-      { path: 'legajos', component: LegajosPageComponent },
+      // 👤 USER DEFAULT
+      {
+        path: 'legajos',
+        component: LegajosPageComponent
+      },
 
-      { path: '', redirectTo: 'legajos', pathMatch: 'full' }
+      // 👑 ADMIN ONLY
+      {
+        path: 'admin/usuarios',
+        component: AdminUsuariosPageComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
+      // 🔁 default dentro del layout
+      {
+        path: '',
+        redirectTo: 'legajos',
+        pathMatch: 'full'
+      }
     ]
   },
 
-  // fallback
-  { path: '**', redirectTo: 'login' }
+  // =========================
+  // 🚫 FALLBACK
+  // =========================
+  {
+    path: '**',
+    redirectTo: 'login'
+  }
 ];

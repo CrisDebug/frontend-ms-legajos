@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/services/auth.service';
+import { map } from 'rxjs';
+import { LoginResponse } from '../../../../core/auth/models/auth.model';
 
 @Component({
   selector: 'app-topbar',
@@ -12,26 +14,29 @@ import { AuthService } from '../../../../core/auth/services/auth.service';
 })
 export class TopbarComponent {
 
-  // 👤 usuario logueado (email + rol)
-  user: any;
+  user$;
+  role$;
+
+  // 👇 ESTO ES LO QUE FALTABA
+  @Output() toggleAdmin = new EventEmitter<void>();
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
+    this.user$ = this.authService.currentUser$;
 
-    // 🔐 obtenemos usuario desde el JWT al cargar componente
-    this.user = this.authService.getUserFromToken();
+    this.role$ = this.authService.currentUser$.pipe(
+      map((user: LoginResponse | null) => user?.rol ?? null)
+    );
   }
 
-  /**
-   * 🚪 LOGOUT
-   * - elimina token
-   * - limpia sesión
-   * - redirige a login
-   */
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  goToAdmin(): void {
+    this.router.navigate(['/admin/usuarios']);
   }
 }

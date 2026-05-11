@@ -8,12 +8,16 @@
   <!-- Lista dinámica -->
   <nav class="space-y-2 flex-1">
 
+    <!-- BOTONES CASILLEROS -->
     <button
       *ngFor="let casillero of casilleros"
+      type="button"
       (click)="selectCasillero(casillero.id)"
       class="w-full text-left px-3 py-2 hover:border-l-4"
+
       [ngClass]="{
-      ' font-semibold border-l-8 border-yellow-200': selectedCasilleroId === casillero.id
+        'font-semibold border-l-8 border-yellow-200':
+        (selectedCasilleroId$ | async) === casillero.id
       }"
     >
       {{ casillero.nombreCasillero }}
